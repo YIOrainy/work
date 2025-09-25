@@ -2,19 +2,26 @@ import sqlalchemy as sa
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 
-DATABASE_URL = "postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/postgres"
+DATABASE_URL = "sqlite:///./database.db"
 
 engine = sa.create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
+def get_db():
+    db = Session()
+    try:
+        yield db
+    finally:
+        db.close()
+
 class User(Base):
     __tablename__ = 'users'
-    user_id = sa.Column(sa.Integer, primary_key=True)
-    name = sa.Column(sa.String)
+    id = sa.Column(sa.Integer, primary_key=True)  
     email = sa.Column(sa.String)
     access_token = sa.Column(sa.String)
     refresh_token = sa.Column(sa.String)
+    password = sa.Column(sa.String)
     
 
 
@@ -28,13 +35,13 @@ class CalendarAuthorization(Base):
 
 
 
-class Calendar(Base):
-    __tablename__ = 'calenar'
-    calendar_id = sa.Column(sa.Integer, primary_key=True)
-    authorization_id = 
-    name = sa.Column(sa.String)
-    color = sa.Column(sa.String)
-    icon = sa.Column(sa.String)
+# class Calendar(Base):
+#     __tablename__ = 'calenar'
+#     calendar_id = sa.Column(sa.Integer, primary_key=True)
+#     authorization_id = 
+#     name = sa.Column(sa.String)
+#     color = sa.Column(sa.String)
+#     icon = sa.Column(sa.String)
 
 
 class Task(Base):
